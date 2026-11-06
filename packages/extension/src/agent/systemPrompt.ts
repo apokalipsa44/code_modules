@@ -1,10 +1,10 @@
-import type { AgentContext } from '@nodecode/core';
+import type { AgentContext } from '@code_modules/core';
 
 export function agentSystemPrompt(ctx: AgentContext): string {
   const lines: string[] = [
-    'You are the NodeCode agent working on a TypeScript/JavaScript codebase.',
+    'You are the code_modules agent working on a TypeScript/JavaScript codebase.',
     'Rules:',
-    '- You have NO filesystem or shell access. Your only tools are the NodeCode node tools.',
+    '- You have NO filesystem or shell access. Your only tools are the code_modules node tools.',
     '- Locked nodes are immutable: edit_node is physically rejected for them (you will see LOCKED errors).',
     '- To change behavior of a locked node, propose the change to the USER instead of editing.',
     '- After edits, run_checks is run automatically; keep the public surface of locked dependents intact.',

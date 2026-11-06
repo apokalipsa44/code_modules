@@ -1,4 +1,4 @@
-# NodeCode
+# code_modules
 
 A VS Code extension that turns a codebase into an **editable node graph**, with
 **agent-enforced per-node locks**: an AI agent can explore, edit and create nodes,
@@ -57,10 +57,10 @@ Then in VS Code:
 
 1. Open this repo (or any folder) in a shell and `code packages/extension`
    *inside* the same workspace, or just open the repo root —
-   **F5** launches a preconfigured "Run NodeCode Extension" debug session
+   **F5** launches a preconfigured "Run code_modules Extension" debug session
    (see `.vscode/launch.json`, builds are wired to pre-launch tasks if missing).
-2. In the opened window run **NodeCode: Open Graph** from the Command Palette.
-3. Optional: run **NodeCode: /init — Scan workspace and generate metadata**
+2. In the opened window run **code_modules: Open Graph** from the Command Palette.
+3. Optional: run **code_modules: /init — Scan workspace and generate metadata**
    for summaries, tags and a default lock policy.
 
 No display / headless CI: everything except the live host is exercised by
@@ -76,11 +76,11 @@ Two providers exist behind the same `MetaProvider`/tool-gate interfaces in core:
 - **Claude (Agent SDK)** — implemented (MCP tool server + `canUseTool` deny
   gate). Enable it with **both**:
 
-  1. `nodecode.modelProvider = "claude"`, and
+  1. `code_modules.modelProvider = "claude"`, and
   2. an API key stored *only* in VS Code **SecretStorage**: run
-     `NodeCode: Open Graph` then any `/init`-like flow prompts to save it,
+     `code_modules: Open Graph` then any `/init`-like flow prompts to save it,
      or run the suggested command palette flow to store
-     `nodecode.apiKey`. Alternatively set the `ANTHROPIC_API_KEY`
+     `code_modules.apiKey`. Alternatively set the `ANTHROPIC_API_KEY`
      environment variable before launching VS Code (less safe; SecretStorage
      is preferred).
 
@@ -91,19 +91,19 @@ Two providers exist behind the same `MetaProvider`/tool-gate interfaces in core:
 
 | Setting | Default | Effect |
 |---|---|---|
-| `nodecode.depth` | `2` | dependency expansion depth when searching (1–4) |
-| `nodecode.autoLayout` | `true` | dagre auto-layout |
-| `nodecode.checkCommand` | `""` | read-only command run after agent edits, e.g. `npx tsc --noEmit`; part of the indirect breakage guard |
-| `nodecode.reviewEdits` | `false` | agent edits land in a diff-review queue instead of auto-applying |
-| `nodecode.excludedFolders` | glob list | folders skipped when scanning |
-| `nodecode.maxVisibleNodes` | `400` | render cap / lazy-edge past this |
-| `nodecode.initBudgetTokens` | `750000` | /init token budget |
+| `code_modules.depth` | `2` | dependency expansion depth when searching (1–4) |
+| `code_modules.autoLayout` | `true` | dagre auto-layout |
+| `code_modules.checkCommand` | `""` | read-only command run after agent edits, e.g. `npx tsc --noEmit`; part of the indirect breakage guard |
+| `code_modules.reviewEdits` | `false` | agent edits land in a diff-review queue instead of auto-applying |
+| `code_modules.excludedFolders` | glob list | folders skipped when scanning |
+| `code_modules.maxVisibleNodes` | `400` | render cap / lazy-edge past this |
+| `code_modules.initBudgetTokens` | `750000` | /init token budget |
 
 Everything is logged, nothing is telemetred — ever.
 
 ## Demo script (manual, ~90 s)
 
-1. `F5` → **NodeCode: Open Graph** → `NodeCode: /init`.
+1. `F5` → **code_modules: Open Graph** → `code_modules: /init`.
 2. Search `getSession`, pick a depth, watch the LPC layer chips.
 3. **Lock** `src/auth.ts#getSession` from its card.
 4. Open the agent dock: *“add a border to the avatar component”* →
@@ -152,7 +152,7 @@ Not published per spec (YOLO rules forbid external accounts/services). To make
 a local `.vsix` manually:
 
 ```bash
-npx --yes @vscode/vsce package --no-dependencies -o dist/nodecode.vsix
+npx --yes @vscode/vsce package --no-dependencies -o dist/code_modules.vsix
 ```
 
 (`vsce` needs a display-less environment only for `npm test`; packaging is

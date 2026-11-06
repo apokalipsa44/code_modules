@@ -1,7 +1,7 @@
 import type {
   FromExtensionToWebview,
   FromWebviewToExtension,
-} from '@nodecode/core';
+} from '@code_modules/core';
 
 /** Typed bridge to the extension host (acquireVsCodeApi is available in webviews). */
 export interface VsCodeApi {

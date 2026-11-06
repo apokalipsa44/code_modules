@@ -6,7 +6,7 @@ import {
   workspace,
   type Location,
 } from 'vscode';
-import { nodeIdFor as nodeId, type CodeEdge } from '@nodecode/core';
+import { nodeIdFor as nodeId, type CodeEdge } from '@code_modules/core';
 import type { WorkspaceGraphService } from './service';
 /**
  * LSP bridge: reference/definition-driven edges, falling back to the core's

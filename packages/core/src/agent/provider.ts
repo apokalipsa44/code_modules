@@ -23,7 +23,7 @@ export interface AgentRequest {
 }
 
 /**
- * The model behind the NodeCode agent. Implementations:
+ * The model behind the code_modules agent. Implementations:
  *  - ClaudeAgentProvider (extension, Claude Agent SDK),
  *  - MockProvider / ScriptedProvider (tests, offline).
  * The provider is *stateless between calls*: the core AgentRunner owns the

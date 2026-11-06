@@ -1,9 +1,9 @@
 {
-  "name": "@nodecode/webview",
+  "name": "@code_modules/webview",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "NodeCode webview UI: React Flow graph + Monaco node cards",
+  "description": "code_modules webview UI: React Flow graph + Monaco node cards",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.json && vite build"

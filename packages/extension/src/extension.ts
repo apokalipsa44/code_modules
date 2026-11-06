@@ -22,7 +22,7 @@ import {
   type AgentToolContext,
   type EditApplier,
   type MetaProvider,
-} from '@nodecode/core';
+} from '@code_modules/core';
 import { WorkspaceGraphService } from './service';
 import { registerTamperGuard } from './tamper';
 import { createCheckRunner } from './checks';
@@ -36,13 +36,13 @@ import { tryLoadSdk, sdkAgentRun } from './agent/claudeProvider';
 import { agentSystemPrompt } from './agent/systemPrompt';
 import { summarizeViaSdk } from './agent/scanModel';
 
-const settings = () => workspace.getConfiguration('nodecode');
+const settings = () => workspace.getConfiguration('code_modules');
 
 export function activate(context: ExtensionContext): { service: WorkspaceGraphService } {
   const wsFolder = workspace.workspaceFolders?.[0];
   if (!wsFolder) {
-    void window.showErrorMessage('NodeCode: open a folder first.');
-    throw new Error('NodeCode: no workspace folder');
+    void window.showErrorMessage('code_modules: open a folder first.');
+    throw new Error('code_modules: no workspace folder');
   }
   const rootPath = wsFolder.uri.fsPath;
   const relOf = (fsPath: string): string | null =>
@@ -132,12 +132,12 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
             cwd: rootPath,
           });
           for (const b of res.blocked) {
-            void window.showWarningMessage(`NodeCode: agent tried a disallowed tool (${b}); denied.`);
+            void window.showWarningMessage(`code_modules: agent tried a disallowed tool (${b}); denied.`);
           }
           await service.ensureScanned(() => undefined);
           return res.reply;
         } catch (err) {
-          void window.showWarningMessage(`NodeCode: SDK run failed (${String(err).slice(0, 140)}) — offline mock used.`);
+          void window.showWarningMessage(`code_modules: SDK run failed (${String(err).slice(0, 140)}) — offline mock used.`);
         }
       }
     }
@@ -146,7 +146,7 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     }
     return [
       '[offline mock] Agent tools unavailable without an API key.',
-      'To enable real runs: store the key (SecretStorage: nodecode.apiKey, see command prompt) and keep nodecode.modelProvider=claude.',
+      'To enable real runs: store the key (SecretStorage: code_modules.apiKey, see command prompt) and keep code_modules.modelProvider=claude.',
       `Locks still enforced: ${Object.values(index.nodes).filter((n) => n.locked).length} locked node(s) are untouchable in any provider.`,
     ].join('\n');
   }
@@ -166,7 +166,7 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     ) {
       const sdk = await tryLoadSdk();
       if (!sdk) {
-        const { heuristicMetaProvider } = await import('@nodecode/core');
+        const { heuristicMetaProvider } = await import('@code_modules/core');
         return heuristicMetaProvider().summarize(node, context);
       }
       return summarizeViaSdk(sdk, this.apiKey, node, context, { cwd: rootPath, graph: service.store.get() });
@@ -179,12 +179,12 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     const budget = estimateBudget();
     const provider: MetaProvider = apiKey ? new SdkMetaProvider(apiKey) : ({
       async summarize(node) {
-        const { heuristicMetaProvider } = await import('@nodecode/core');
+        const { heuristicMetaProvider } = await import('@code_modules/core');
         return heuristicMetaProvider().summarize(node, []);
       },
     } as MetaProvider);
     await window.withProgress(
-      { location: ProgressLocation.Notification, cancellable: true, title: 'NodeCode /init' },
+      { location: ProgressLocation.Notification, cancellable: true, title: 'code_modules /init' },
       async (progress, token) => {
         const res = await service.runScan(provider, {
           budgetTokens: budget,
@@ -193,7 +193,7 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
           shouldStop: () => token.isCancellationRequested,
         });
         void window.showInformationMessage(
-          `NodeCode /init: ${res.processed.length} generated, ${res.skippedFresh.length} already fresh, ${res.failed.length ? Object.keys(res.failed).length + ' failed' : 'no failures'}; lock tags: ${res.proposedLockTags.join(', ') || 'none'}`
+          `code_modules /init: ${res.processed.length} generated, ${res.skippedFresh.length} already fresh, ${res.failed.length ? Object.keys(res.failed).length + ' failed' : 'no failures'}; lock tags: ${res.proposedLockTags.join(', ') || 'none'}`
         );
       }
     );
@@ -225,7 +225,7 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
         const range = new Range(pos, pos);
         ed.selection = new Selection(pos, pos);        ed.revealRange(range);
       } catch {
-        void window.showWarningMessage(`NodeCode: cannot reveal ${id}`);
+        void window.showWarningMessage(`code_modules: cannot reveal ${id}`);
       }
     },
     runAgent: runAgentFlow,
@@ -292,9 +292,9 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
   // ---- chat participant (/init) ------------------------------------------------
 
   try {
-    const participant = chat.createChatParticipant('nodecode.nodecode', async (request, _ctx, stream) => {
+    const participant = chat.createChatParticipant('code_modules.chat', async (request, _ctx, stream) => {
       if (request.command === 'init' || request.prompt.trim().startsWith('/init')) {
-        stream.markdown('**NodeCode /init** — scanning bottom-up, generating metadata + default locks…\n\n');
+        stream.markdown('**code_modules /init** — scanning bottom-up, generating metadata + default locks…\n\n');
         const r = await runInitScan();
         stream.markdown(`\n✅ ${r}: \`.nodes/index.json\` written.`);
         return { metadata: { command: 'init' } };
@@ -314,28 +314,28 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
       return { metadata: {} };
     });
     participant.followupProvider = {
-      provideFollowups: () => [{ prompt: '/init', title: 'Scan workspace with NodeCode' }],
+      provideFollowups: () => [{ prompt: '/init', title: 'Scan workspace with code_modules' }],
     };
     context.subscriptions.push(participant);
   } catch (err) {
-    console.error('[nodecode] chat participant unavailable:', String(err));
+    console.error('[code_modules] chat participant unavailable:', String(err));
   }
 
   // ---- commands ------------------------------------------------------------------
 
   context.subscriptions.push(
-    commands.registerCommand('nodecode.openGraph', async () => {
+    commands.registerCommand('code_modules.openGraph', async () => {
       await view.open();
       await router.handle({ type: 'ready' });
     }),
-    commands.registerCommand('nodecode.refresh', async () => {
+    commands.registerCommand('code_modules.refresh', async () => {
       await service.ensureScanned();
       service.save();
       service.notifyGraph();
       await router.handle({ type: 'refresh', full: true });
     }),
-    commands.registerCommand('nodecode.init', async () => runInitScan()),
-    commands.registerCommand('nodecode.showLocks', () => {
+    commands.registerCommand('code_modules.init', async () => runInitScan()),
+    commands.registerCommand('code_modules.showLocks', () => {
       const locked = Object.values(service.store.get().nodes).filter((n) => n.locked);
       void window
         .showQuickPick(locked.map((n) => ({ label: `${n.id}`, detail: n.lockReason || 'locked' })), {

@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run NodeCode Extension",
+      "name": "Run code_modules Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [

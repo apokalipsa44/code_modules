@@ -1,4 +1,4 @@
-import type { AgentToolContext } from '@nodecode/core';
+import type { AgentToolContext } from '@code_modules/core';
 
 /**
  * Review mode: agent edits don't auto-apply; they go to the webview as diffs

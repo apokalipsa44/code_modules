@@ -1,5 +1,5 @@
 /**
- * NodeCode core data model. Versioned, migration-ready.
+ * code_modules core data model. Versioned, migration-ready.
  * All persisted shapes live here so `.nodes/index.json` has a single source of truth.
  */
 

@@ -1,8 +1,8 @@
 {
-  "name": "@nodecode/core",
+  "name": "@code_modules/core",
   "version": "0.1.0",
   "private": true,
-  "description": "NodeCode core: node extraction, graph model, lock engine, contract generation, agent tool layer (no vscode dependency)",
+  "description": "code_modules core: node extraction, graph model, lock engine, contract generation, agent tool layer (no vscode dependency)",
   "license": "MIT",
   "type": "commonjs",
   "main": "dist/index.js",

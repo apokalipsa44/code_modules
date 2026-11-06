@@ -1,4 +1,4 @@
-# DECISIONS — NodeCode
+# DECISIONS — code_modules
 
 - **web-tree-sitter + tree-sitter-wasms**: prebuilt WASM grammars load in Node (extension host) AND vitest without a build step. Rationale: zero native compile, works in CI.
 - **Node ids**: `<posix file>#<symbolPath>`; symbolPath dotted (`Class.method`, `parent.nested`). Stable across line shifts. Rename/move reclaim state (lock/tags/meta) via content-hash "tombstones" kept in the GraphStore when a node disappears; relinked when identical code reappears elsewhere.

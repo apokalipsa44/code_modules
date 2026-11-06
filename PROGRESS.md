@@ -3,7 +3,7 @@
 ## Phase 1 — Skeleton ✅
 - Monorepo: npm workspaces (core / extension / webview), esbuild for the extension, Vite for the webview, eslint + prettier, vitest at root.
 - Typed message protocol Single source of truth: `packages/core/src/protocol.ts`.
-- `NodeCode: Open Graph` opens a React Flow webview (drag/zoom/minimap, dagre auto-layout).
+- `code_modules: Open Graph` opens a React Flow webview (drag/zoom/minimap, dagre auto-layout).
 - Round trip: `ready → graphUpdated` covered by `packages/core/test/protocol.test.ts` and `packages/extension/test/router.test.ts`.
 - Note: full `@vscode/test-electron` host run blocked (no display; see BLOCKERS.md).
 
@@ -32,7 +32,7 @@
 - Core `AgentRunner` loop + `ToolGate`: only `search_nodes/read_node/edit_node/create_node/list_dependencies/list_dependents/run_checks`.
 - Each handler re-checks locks; SDK adapter (extension) registers MCP tool server with the same gate + `canUseTool` final deny of unknown tools; no raw FS/bash tools exist anywhere.
 - Indirect breakage guard: post-edit checks on transitive dependents; failing diagnostics touching a locked (edited-or-dependent) file → auto-rollback + diagnostics returned.
-- Subgraph context: editable nodes full, locked nodes as contracts (+STALE warnings); review mode available (`nodecode.reviewEdits`) via diff approval queue.
+- Subgraph context: editable nodes full, locked nodes as contracts (+STALE warnings); review mode available (`code_modules.reviewEdits`) via diff approval queue.
 - E2E test: "add a border to the avatar" — avatar edited, adversarial auth edit blocked, signature-breaking dependency edit rolled back.
 
 ## Phase 7 — /init scan & metadata ✅ (provider pluggable)
@@ -48,6 +48,6 @@
 ## Final packaging ✅
 - README.md: architecture, run/test instructions, settings table, provider + key handling, demo script, packaging note.
 - CI (GitHub Actions): install → build → lint → typecheck → vitest; bundle uploaded as artifact.
-- .vscode/launch.json (F5 "Run NodeCode Extension" on examples/demo, vitest task) + tasks.json.
+- .vscode/launch.json (F5 "Run code_modules Extension" on examples/demo, vitest task) + tasks.json.
 - examples/demo: small auth/api/ui sample workspace for manual verification.
 - eslint: 0 errors, 0 warnings across all packages; tsc clean.

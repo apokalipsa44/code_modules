@@ -1,4 +1,4 @@
-# NodeCode — design note
+# code_modules — design note
 
 Revenue-pitch: turn a codebase into an editable node graph with hard locks the AI agent cannot bypass.
 
@@ -29,7 +29,7 @@ packages/
       src/protocol.ts # ALSO mirrored in core as messageProtocol.ts (single source of truth: packages/core/src/protocol.ts)
 ```
 
-Single source of truth for the webview<->extension message protocol lives in **core** (`nodecode/core/protocol.ts`); the webview imports it (type-only) so there is no drift.
+Single source of truth for the webview<->extension message protocol lives in **core** (`code_modules/core/protocol.ts`); the webview imports it (type-only) so there is no drift.
 
 ## Message protocol (typed postMessage)
 

@@ -4,7 +4,7 @@ import type { WorkspaceGraphService } from './service';
 /**
  * Defense in depth for locks OUTSIDE the agent:
  *  - onWillSaveTextDocument: if a locked range changes with no prior unlock
- *    through NodeCode (git pull, manual edit, another tool), warn before saving.
+ *    through code_modules (git pull, manual edit, another tool), warn before saving.
  *  - offer review / accept; reject = save as usual but with a visible flag.
  */
 export function registerTamperGuard(service: WorkspaceGraphService, getRootFile: (uri: string) => string | null): { dispose: () => void } {
@@ -29,14 +29,14 @@ export function registerTamperGuard(service: WorkspaceGraphService, getRootFile:
     }
     if (changed.length === 0) return;
     const pick = await window.showWarningMessage(
-      `NodeCode: locked node(s) changed outside NodeCode: ${changed.slice(0, 3).join(', ')}${changed.length > 3 ? '…' : ''} — review?`,
+      `code_modules: locked node(s) changed outside code_modules: ${changed.slice(0, 3).join(', ')}${changed.length > 3 ? '…' : ''} — review?`,
       { modal: false },
       'Review diff',
       'Accept changes'
     );
     if (pick === 'Review diff') {
       // open the ORIGINAL content side-by-side from git-less baseline stored text
-      await commands.executeCommand('vscode.diff', doc.uri, doc.uri, 'NodeCode: review external change to locked node');
+      await commands.executeCommand('vscode.diff', doc.uri, doc.uri, 'code_modules: review external change to locked node');
     } else if (pick === 'Accept changes') {
       for (const id of changed) {
         const n = service.store.node(id);

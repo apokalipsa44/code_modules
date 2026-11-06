@@ -11,7 +11,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
-import type { FromExtensionToWebview, GraphNodeDTO } from '@nodecode/core';
+import type { FromExtensionToWebview, GraphNodeDTO } from '@code_modules/core';
 import { onMessage, send } from './bridge';
 import { MonacoNodeEditor } from './editor';
 

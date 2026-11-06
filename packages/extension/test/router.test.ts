@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ExtensionRouter, type RouterDeps } from '../src/router';
-import type { FromExtensionToWebview, GraphNodeDTO } from '@nodecode/core';
+import type { FromExtensionToWebview, GraphNodeDTO } from '@code_modules/core';
 
 const node: GraphNodeDTO = {
   id: 'src/x.ts#hello',

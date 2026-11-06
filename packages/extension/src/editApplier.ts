@@ -1,5 +1,5 @@
 import { Range, Position, WorkspaceEdit, Uri, window, workspace, type TextEditorEdit, type WorkspaceConfiguration } from 'vscode';
-import type { EditApplier, SourceEdit } from '@nodecode/core';
+import type { EditApplier, SourceEdit } from '@code_modules/core';
 
 /**
  * EditApplier implemented on WorkspaceEdit: full undo/redo and dirty-state support.

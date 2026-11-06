@@ -1,16 +1,16 @@
 {
-  "name": "nodecode",
-  "displayName": "NodeCode",
+  "name": "code_modules",
+  "displayName": "code_modules",
   "description": "Node-based code view with agent-enforced locks: edit your codebase as a graph, lock modules the AI can't touch",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "publisher": "nodecode-dev",
+  "publisher": "code-modules-dev",
   "type": "commonjs",
   "main": "dist/extension.js",
   "icon": "assets/icon.png",
   "sponsor": {
-    "url": "https://example.com/nodecode"
+    "url": "https://example.com/code_modules"
   },
   "engines": {
     "vscode": "^1.95.0",
@@ -22,72 +22,83 @@
     "AI"
   ],
   "activationEvents": [
-    "onView:nodecode.graph"
+    "onView:code_modules.graph"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "nodecode.openGraph",
-        "title": "NodeCode: Open Graph",
-        "category": "NodeCode"
+        "command": "code_modules.openGraph",
+        "title": "code_modules: Open Graph",
+        "category": "code_modules"
       },
       {
-        "command": "nodecode.refresh",
-        "title": "NodeCode: Refresh Graph",
-        "category": "NodeCode"
+        "command": "code_modules.refresh",
+        "title": "code_modules: Refresh Graph",
+        "category": "code_modules"
       },
       {
-        "command": "nodecode.init",
-        "title": "NodeCode: /init — Scan workspace and generate metadata",
-        "category": "NodeCode"
+        "command": "code_modules.init",
+        "title": "code_modules: /init \u2014 Scan workspace and generate metadata",
+        "category": "code_modules"
       },
       {
-        "command": "nodecode.showLocks",
-        "title": "NodeCode: Show locked nodes",
-        "category": "NodeCode"
+        "command": "code_modules.showLocks",
+        "title": "code_modules: Show locked nodes",
+        "category": "code_modules"
       }
     ],
     "configuration": {
-      "title": "NodeCode",
+      "title": "code_modules",
       "properties": {
-        "nodecode.depth": {
+        "code_modules.depth": {
           "type": "number",
           "default": 2,
           "description": "Dependency expansion depth when searching (1-4)."
         },
-        "nodecode.autoLayout": {
+        "code_modules.autoLayout": {
           "type": "boolean",
           "default": true,
           "description": "Use dagre auto-layout for the graph."
         },
-        "nodecode.checkCommand": {
+        "code_modules.checkCommand": {
           "type": "string",
           "default": "",
           "description": "Read-only check command run after agent edits (e.g. 'npx tsc --noEmit'). Empty disables the indirect breakage guard."
         },
-        "nodecode.reviewEdits": {
+        "code_modules.reviewEdits": {
           "type": "boolean",
           "default": false,
           "description": "Require diff review before agent edits apply. Default: auto-apply (edits are still logged and undoable)."
         },
-        "nodecode.excludedFolders": {
+        "code_modules.excludedFolders": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["**/node_modules/**", "**/.git/**", "**/dist/**", "**/out/**", "**/.nodes/**"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/dist/**",
+            "**/out/**",
+            "**/.nodes/**"
+          ],
           "description": "Glob patterns excluded from scanning."
         },
-        "nodecode.maxVisibleNodes": {
+        "code_modules.maxVisibleNodes": {
           "type": "number",
           "default": 250,
           "description": "Cap visible nodes in the webview; extra nodes collapse into layer groups."
         },
-        "nodecode.modelProvider": {
+        "code_modules.modelProvider": {
           "type": "string",
-          "enum": ["claude", "mock"],
+          "enum": [
+            "claude",
+            "mock"
+          ],
           "default": "claude",
-          "description": "Model behind the NodeCode agent. 'mock' runs fully offline with deterministic scripted answers."
+          "description": "Model behind the code_modules agent. 'mock' runs fully offline with deterministic scripted answers."
         },
-        "nodecode.initBudgetTokens": {
+        "code_modules.initBudgetTokens": {
           "type": "number",
           "default": 750000,
           "description": "Hard cap (estimated tokens) for a /init scan."
@@ -96,8 +107,8 @@
     },
     "chatParticipants": [
       {
-        "id": "nodecode.nodecode",
-        "name": "nodecode",
+        "id": "code_modules.chat",
+        "name": "code_modules",
         "description": "Scan the workspace (/init) and ask about your code graph. Secret: locked nodes expose contracts only.",
         "isSticky": true,
         "commands": [
@@ -115,7 +126,7 @@
     "test": "npm run build"
   },
   "dependencies": {
-    "@nodecode/core": "*",
+    "@code_modules/core": "*",
     "@anthropic-ai/claude-agent-sdk": "^0.3.0",
     "web-tree-sitter": "^0.25.0",
     "tree-sitter-wasms": "^0.1.13"

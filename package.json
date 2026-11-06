@@ -1,8 +1,8 @@
 {
-  "name": "nodecode",
+  "name": "code_modules",
   "version": "0.1.0",
   "private": true,
-  "description": "NodeCode: VS Code extension turning a codebase into an editable node graph with agent-enforced locks",
+  "description": "code_modules: VS Code extension turning a codebase into an editable node graph with agent-enforced locks",
   "license": "MIT",
   "workspaces": [
     "packages/core",

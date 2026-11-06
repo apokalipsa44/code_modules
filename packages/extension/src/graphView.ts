@@ -31,7 +31,7 @@ export class GraphViewHost {
       this.panel.reveal();
       return;
     }
-    const panel = window.createWebviewPanel('nodecode.graph', 'NodeCode Graph', ViewColumn.Beside, {
+    const panel = window.createWebviewPanel('code_modules.graph', 'code_modules Graph', ViewColumn.Beside, {
       enableScripts: true,
       retainContextWhenHidden: true,
       localResourceRoots: [Uri.file(this.webviewRoot())],
@@ -78,7 +78,7 @@ export class GraphViewHost {
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data:; style-src ${webview.cspSource} 'unsafe-inline'; font-src ${webview.cspSource}; script-src 'nonce-${nonce}'; worker-src ${webview.cspSource} blob:; connect-src ${webview.cspSource};">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NodeCode</title>
+<title>code_modules</title>
 ${entryFiles
   .map(({ file, isCss }) =>
     isCss ? `<link rel="stylesheet" href="${resolve(file)}">` : `<script src="${resolve(file)}" nonce="${nonce}"></script>`

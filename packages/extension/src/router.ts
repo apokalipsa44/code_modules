@@ -1,8 +1,8 @@
-import type { CodeEdge, GraphNodeDTO } from '@nodecode/core';
+import type { CodeEdge, GraphNodeDTO } from '@code_modules/core';
 import {
   FromExtensionToWebview as Out,
   FromWebviewToExtension as In,
-} from '@nodecode/core';
+} from '@code_modules/core';
 
 /**
  * Pure intent router: maps webview intents to service calls and produces the
@@ -51,7 +51,7 @@ export class ExtensionRouter {
         case 'startEdit': {
           const src = await this.deps.readNodeSource(intent.id);
           if (!src) {
-            this.send({ type: 'error', message: `NodeCode: cannot read ${intent.id}` });
+            this.send({ type: 'error', message: `code_modules: cannot read ${intent.id}` });
             return;
           }
           this.send({ type: 'nodeContent', id: intent.id, file: src.file, content: src.content, startLine: src.startLine });
@@ -60,7 +60,7 @@ export class ExtensionRouter {
         case 'saveEdit': {
           const res = await this.deps.saveNodeEdit(intent.id, intent.content);
           if (!res.ok) {
-            this.send({ type: 'error', message: `NodeCode: ${res.error}` });
+            this.send({ type: 'error', message: `code_modules: ${res.error}` });
           } else {
             this.graph(this.deps.getGraph());
           }
@@ -92,10 +92,10 @@ export class ExtensionRouter {
           return;
         }
         default:
-          this.send({ type: 'error', message: 'NodeCode: unknown intent' });
+          this.send({ type: 'error', message: 'code_modules: unknown intent' });
       }
     } catch (err) {
-      this.send({ type: 'error', message: `NodeCode: ${String(err)}` });
+      this.send({ type: 'error', message: `code_modules: ${String(err)}` });
     }
   }
 

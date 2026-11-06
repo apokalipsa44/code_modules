@@ -116,14 +116,14 @@ export class LockEngine {
 
   setLocked(nodeId: string, locked: boolean, reason = 'manual'): void {
     const n = this.byId(nodeId);
-    if (!n) throw new Error(`NodeCode: unknown node ${nodeId}`);
+    if (!n) throw new Error(`code_modules: unknown node ${nodeId}`);
     n.locked = locked;
     n.lockReason = locked ? reason : '';
   }
 
   toggleLock(nodeId: string, reason = 'manual'): boolean {
     const n = this.byId(nodeId);
-    if (!n) throw new Error(`NodeCode: unknown node ${nodeId}`);
+    if (!n) throw new Error(`code_modules: unknown node ${nodeId}`);
     n.locked = !n.locked;
     n.lockReason = n.locked ? reason : '';
     return n.locked;

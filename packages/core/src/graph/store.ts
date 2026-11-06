@@ -158,7 +158,7 @@ export class GraphStore {
 
   toggleLock(id: string, reason?: string): boolean {
     const n = this.index.nodes[id];
-    if (!n) throw new Error(`NodeCode: unknown node ${id}`);
+    if (!n) throw new Error(`code_modules: unknown node ${id}`);
     n.locked = !n.locked;
     n.lockReason = n.locked ? (reason ?? 'manual') : '';
     return n.locked;
@@ -166,7 +166,7 @@ export class GraphStore {
 
   setLocked(id: string, locked: boolean, reason = 'manual'): void {
     const n = this.index.nodes[id];
-    if (!n) throw new Error(`NodeCode: unknown node ${id}`);
+    if (!n) throw new Error(`code_modules: unknown node ${id}`);
     n.locked = locked;
     n.lockReason = locked ? reason : '';
   }
@@ -205,7 +205,7 @@ export function migrate(raw: Partial<GraphIndex>): GraphIndex {
   };
   if (version > SCHEMA_VERSION) {
     throw new Error(
-      `NodeCode: index schema v${version} is newer than supported v${SCHEMA_VERSION}`
+      `code_modules: index schema v${version} is newer than supported v${SCHEMA_VERSION}`
     );
   }
   if (version < SCHEMA_VERSION) {

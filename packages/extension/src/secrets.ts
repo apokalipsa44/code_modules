@@ -1,7 +1,7 @@
 import { window, workspace, env } from 'vscode';
 import { env as nodeEnv } from 'node:process';
 
-export const SECRET_API_KEY = 'nodecode.apiKey';
+export const SECRET_API_KEY = 'code_modules.apiKey';
 
 export async function getApiKey(): Promise<string | null> {
   const secret = await (workspace as unknown as { secrets?: { get(k: string): Promise<string | undefined> } }).secrets;
@@ -22,7 +22,7 @@ export async function promptApiKey(): Promise<void> {
   if (key) {
     const secrets = (workspace as unknown as { secrets: { store(k: string, v: string): Promise<void>; delete(k: string): Promise<void> } }).secrets;
     await secrets.store(SECRET_API_KEY, key);
-    void window.showInformationMessage('NodeCode: API key stored in SecretStorage.');
+    void window.showInformationMessage('code_modules: API key stored in SecretStorage.');
   }
 }
 

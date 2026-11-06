@@ -15,9 +15,9 @@ import {
   type GraphIndex,
   type GraphNodeDTO,
   type SourceEdit,
-} from '@nodecode/core';
-import { resolveImport } from '@nodecode/core';
-import { runScan, type MetaProvider, type ScanResult } from '@nodecode/core';
+} from '@code_modules/core';
+import { resolveImport } from '@code_modules/core';
+import { runScan, type MetaProvider, type ScanResult } from '@code_modules/core';
 import type { FileRegistry } from './types';
 
 /**

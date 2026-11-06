@@ -23,7 +23,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nodecode-bundle
+          name: code_modules-bundle
           path: |
             packages/extension/dist/extension.js
             packages/extension/dist/webview

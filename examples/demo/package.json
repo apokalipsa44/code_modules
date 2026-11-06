@@ -1,6 +1,6 @@
 {
-  "name": "nodecode-demo",
+  "name": "code_modules-demo",
   "version": "0.0.1",
   "private": true,
-  "description": "Throwaway workspace for trying NodeCode: an auth/api/ui split. Not a real app — no deps, nothing to install."
+  "description": "Throwaway workspace for trying code_modules: an auth/api/ui split. Not a real app — no deps, nothing to install."
 }

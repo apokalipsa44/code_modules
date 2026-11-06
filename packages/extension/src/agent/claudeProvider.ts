@@ -1,4 +1,4 @@
-import type { AgentToolContext, ToolGate } from '@nodecode/core';
+import type { AgentToolContext, ToolGate } from '@code_modules/core';
 
 export interface SdkRunResult {
   reply: string;
@@ -13,7 +13,7 @@ export interface SdkAgent {
 /**
  * Claude Agent SDK adapter (real implementation, loaded lazily).
  *
- * The SDK is given ONLY our MCP tool server ("nodecode") whose tools delegate to
+ * The SDK is given ONLY our MCP tool server ("code_modules") whose tools delegate to
  * the core ToolGate — raw file-write / bash tools are never registered. An
  * additional permission gate (`canUseTool`) is the final pass: it denies every
  * tool not on the allowlist, so even model-hallucinated tools cannot touch files.
@@ -70,17 +70,17 @@ export async function sdkAgentRun(
   });
 
   if (!createSdkMcpServer || !tool) {
-    throw new Error('NodeCode: Claude Agent SDK version lacks createSdkMcpServer/tool API');
+    throw new Error('code_modules: Claude Agent SDK version lacks createSdkMcpServer/tool API');
   }
 
   const mcpServer = createSdkMcpServer({
-    name: 'nodecode',
+    name: 'code_modules',
     version: '0.1.0',
     tools: gate.names().map((name) =>
       tool!({
         name,
-        description: nodecodeToolDescriptions[name] ?? name,
-        inputSchema: nodecodeSchemaFor(name),
+        description: code_modulesToolDescriptions[name] ?? name,
+        inputSchema: code_modulesSchemaFor(name),
         handler: async (args: Record<string, unknown>) => {
           // re-check happens inside the gate; this is the ONLY tool surface
           try {
@@ -104,16 +104,16 @@ export async function sdkAgentRun(
       cwd: opts.cwd,
       model: opts.model,
       apiKey,
-      allowedTools: [...gate.names()].map((n) => `mcp__nodecode__${n}`),
+      allowedTools: [...gate.names()].map((n) => `mcp__code_modules__${n}`),
       permissionMode: 'default',
-      mcpServers: { nodecode: mcpServer },
+      mcpServers: { code_modules: mcpServer },
       systemPrompt: opts.systemPrompt,
       canUseTool: async (toolName /* final gate */) => {
-        const base = toolName.startsWith('mcp__nodecode__') ? toolName.replace('mcp__nodecode__', '') : toolName;
+        const base = toolName.startsWith('mcp__code_modules__') ? toolName.replace('mcp__code_modules__', '') : toolName;
         used.add(base);
         if (!(gate.names() as readonly string[]).includes(base)) {
           blocked.push(toolName);
-          return { behavior: 'deny' as const, message: `NodeCode: tool ${toolName} is not allowed. Only ${gate.names().join(', ')} exist.` };
+          return { behavior: 'deny' as const, message: `code_modules: tool ${toolName} is not allowed. Only ${gate.names().join(', ')} exist.` };
         }
         return { behavior: 'allow' as const };
       },
@@ -124,7 +124,7 @@ export async function sdkAgentRun(
       const content = event.data?.message?.content ?? [];
       for (const c of content) {
         if (c.type === 'text' && c.text) reply += c.text + '\n';
-        if (c.type === 'tool_use' && c.name) used.add(String(c.name).replace('mcp__nodecode__', ''));
+        if (c.type === 'tool_use' && c.name) used.add(String(c.name).replace('mcp__code_modules__', ''));
       }
     } else if (event.type === 'result') {
       reply = event.result || reply;
@@ -134,7 +134,7 @@ export async function sdkAgentRun(
   return { reply: reply.trim(), toolCalls: used.size, blocked };
 }
 
-const nodecodeToolDescriptions: Record<string, string> = {
+const code_modulesToolDescriptions: Record<string, string> = {
   search_nodes: 'Search code nodes by symbol/tag/summary. Returns ids with summaries.',
   read_node: 'Read one node: full source for unlocked nodes, contract only for locked ones.',
   edit_node: 'Replace the full contents of one unlocked node. Rejected for locked nodes.',
@@ -144,7 +144,7 @@ const nodecodeToolDescriptions: Record<string, string> = {
   run_checks: 'Run configured typecheck/tests (read-only).',
 };
 
-function nodecodeSchemaFor(name: string): unknown {
+function code_modulesSchemaFor(name: string): unknown {
   const str = (k: string, required = true) => ({ [k]: { type: 'string', required } });
   switch (name) {
     case 'search_nodes':

@@ -74,7 +74,7 @@ export async function getLanguage(kind: GrammarKind): Promise<Language> {
           lastError = err;
         }
       }
-      throw new Error(`NodeCode: failed to load ${kind} grammar: ${String(lastError)}`);
+      throw new Error(`code_modules: failed to load ${kind} grammar: ${String(lastError)}`);
     })();
     languageCache.set(kind, p);
   }

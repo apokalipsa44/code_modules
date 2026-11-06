@@ -22,18 +22,18 @@ function copyWebviewDist() {
   const src = path.resolve(import.meta.dirname, '../webview/dist');
   const dst = path.resolve(import.meta.dirname, 'dist/webview');
   if (!fs.existsSync(src)) {
-    console.log('[nodecode] webview dist missing — run `npm run build -w packages/webview` first');
+    console.log('[code_modules] webview dist missing — run `npm run build -w packages/webview` first');
     return;
   }
   fs.rmSync(dst, { recursive: true, force: true });
   fs.cpSync(src, dst, { recursive: true });
-  console.log('[nodecode] copied webview dist ->', dst);
+  console.log('[code_modules] copied webview dist ->', dst);
 }
 
 if (isWatch) {
   const ctx = await esbuild.context(common);
   await ctx.watch();
-  console.log('[nodecode] esbuild watching...');
+  console.log('[code_modules] esbuild watching...');
 } else {
   await esbuild.build(common);
   copyWebviewDist();
