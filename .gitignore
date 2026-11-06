@@ -1,0 +1,7 @@
+node_modules/
+dist/
+out/
+*.vsix
+coverage/
+.nyc_output/
+spec/
