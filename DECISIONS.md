@@ -13,3 +13,5 @@
 - **ESLint v8 + flat-ish .eslintrc**: kept simple (recommended set, TS parser) to avoid churn; formatting via Prettier.
 - **search scoring**: multi-signal additive (camelCase word-boundary > substring > subsequence; tags/file/summary stack), deterministic tiebreak by id. Kept pure-core so the extension can add LSP workspace-symbol hits on top.
 - **The webview holds zero business logic**: typed protocol in `core/src/protocol.ts` (shared source of truth), webview renders DTOs and sends intents only.
+- **CI**: single `verify` job (build → lint → typecheck → vitest) on ubuntu + node 20; F5/electron integration intentionally left to dev machines (see BLOCKERS). F5 launch config targets `examples/demo` so first run shows a populated graph.
+- **Demo sample**: static TS/TSX sample in `examples/demo` rather than generated fixtures so users can point the extension at a real-looking mini-codebase without any deps.

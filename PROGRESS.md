@@ -45,3 +45,9 @@
 - Settings: depth, excludedFolders, checkCommand, reviewEdits, modelProvider, initBudgetTokens. API key only in SecretStorage/env.
 - Telemetry: none, ever. Errors surfaced through webview + notifications. Docs: README, DECISIONS, BLOCKERS.
 - MCP server package: deferred to IDEAS (optional per spec).
+## Final packaging ✅
+- README.md: architecture, run/test instructions, settings table, provider + key handling, demo script, packaging note.
+- CI (GitHub Actions): install → build → lint → typecheck → vitest; bundle uploaded as artifact.
+- .vscode/launch.json (F5 "Run NodeCode Extension" on examples/demo, vitest task) + tasks.json.
+- examples/demo: small auth/api/ui sample workspace for manual verification.
+- eslint: 0 errors, 0 warnings across all packages; tsc clean.

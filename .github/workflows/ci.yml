@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts || npm install --ignore-scripts
+      - run: npm run build
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: Upload extension bundle (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodecode-bundle
+          path: |
+            packages/extension/dist/extension.js
+            packages/extension/dist/webview
+          if-no-files-found: ignore

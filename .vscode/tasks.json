@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "taskName": "npm: build",
+      "type": "npm",
+      "script": "build",
+      "group": { "kind": "build", "isDefault": true },
+      "problemmatcher": ["$tsc", "$esbuild"]
+    },
+    {
+      "taskName": "npm: watch-extension",
+      "type": "npm",
+      "script": "build:ext",
+      "group": "build",
+      "isBackground": true,
+      "problemmatcher": ["$esbuild"]
+    },
+    {
+      "taskName": "npm: watch-webview",
+      "type": "npm",
+      "script": "build:webview",
+      "group": "build",
+      "isBackground": true
+    },
+    {
+      "taskName": "npm: test",
+      "type": "npm",
+      "script": "test",
+      "group": "test",
+      "problemmatcher": []
+    }
+  ]
+}
