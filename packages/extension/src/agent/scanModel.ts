@@ -1,5 +1,3 @@
-import type { MetaProvider } from '@nodecode/core';
-
 /**
  * Metadata summarizer through the SDK used purely as a text model:
  * no tools are registered. Prompt includes leaf summaries for consistency

@@ -11,6 +11,7 @@ import {
   type ExtensionContext,
 } from 'vscode';
 import * as path from 'node:path';
+import * as fs from 'node:fs';
 import {
   buildSubgraphContext,
   estimateTokens,
@@ -50,16 +51,12 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
 
   const readFile = async (rel: string): Promise<string | null> => {
     try {
-      const fs = require('node:fs') as typeof import('node:fs');
       return fs.readFileSync(path.join(rootPath, rel), 'utf8');
     } catch {
       return null;
     }
   };
-  const exists = (rel: string): boolean => {
-    const fs = require('node:fs') as typeof import('node:fs');
-    return fs.existsSync(path.join(rootPath, rel));
-  };
+  const exists = (rel: string): boolean => fs.existsSync(path.join(rootPath, rel));
   const listFiles = async (): Promise<string[]> => {
     const excludes = settings().get<string[]>('excludedFolders') ?? [];
     const files = await workspace.findFiles('**/*.{ts,tsx,js,jsx}', `{${excludes.join(',')}}`, 20000);
@@ -79,9 +76,6 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
       return null;
     }
   });
-
-  const view = new GraphViewHost(context, () => router);
-  let router: ExtensionRouter;
 
   const pendingEdits = new PendingEdits();
 
@@ -238,7 +232,8 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     initScan: runInitScan,
   };
 
-  router = new ExtensionRouter(
+  const view = new GraphViewHost(context, () => router);
+  const router = new ExtensionRouter(
     deps,
     (m) => view.post(m),
     { depth: settings().get<number>('depth') ?? 2 }
@@ -271,26 +266,25 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
   );
 
   try {
-    context.subscriptions.push(
-      workspace.onDidRenameFiles?.call(workspace, async (e) => {
-        scanning = true;
-        try {
-          for (const f of e.files) {
-            const fromRel = relOf(f.oldUri.fsPath);
-            const toRel = relOf(f.newUri.fsPath);
-            if (!toRel) continue;
-            await service.extractFile(toRel);
-            const text = await readFile(toRel);
-            if (text) service.refreshTamperBaseline(toRel, text);
-            void fromRel;
-          }
-          service.save();
-          service.notifyGraph();
-        } finally {
-          scanning = false;
+    const renameDisposable = workspace.onDidRenameFiles(async (e) => {
+      scanning = true;
+      try {
+        for (const f of e.files) {
+          const fromRel = relOf(f.oldUri.fsPath);
+          const toRel = relOf(f.newUri.fsPath);
+          if (!toRel) continue;
+          await service.extractFile(toRel);
+          const text = await readFile(toRel);
+          if (text) service.refreshTamperBaseline(toRel, text);
+          void fromRel;
         }
-      })!
-    );
+        service.save();
+        service.notifyGraph();
+      } finally {
+        scanning = false;
+      }
+    });
+    if (renameDisposable) context.subscriptions.push(renameDisposable);
   } catch {
     /* onDidRenameFiles unavailable */
   }

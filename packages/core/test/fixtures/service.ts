@@ -1,4 +1,4 @@
-import { Avatar, type Props } from './Avatar';
+import { Avatar, type Props as _Props } from './Avatar';
 
 export class DecoratedService {
   static readonly TAG = 'svc';

@@ -1,6 +1,5 @@
 import {
   window,
-  env,
   ViewColumn,
   Uri,
   type WebviewPanel,

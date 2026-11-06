@@ -37,7 +37,6 @@ function buildWorld() {
 
   // extract + build nodes
   const ex = new TsExtractor();
-  let extraction: Awaited<ReturnType<TsExtractor['extract']>> | null = null;
   let extractInFlight: Promise<Awaited<ReturnType<TsExtractor['extract']>>> | null = null;
   const extract = () => {
     extractInFlight = ex.extract('src/ui/Avatar.tsx', files.get('src/ui/Avatar.tsx')!);
@@ -49,7 +48,7 @@ function buildWorld() {
     return files.get(f)!;
   };
 
-  let applied: SourceEdit[] = [];
+  const applied: SourceEdit[] = [];
   const applier: EditApplier = {
     async apply(edits) {
       for (const e of edits) {

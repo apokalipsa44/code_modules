@@ -8,10 +8,7 @@ import type { WorkspaceGraphService } from './service';
  *  - offer review / accept; reject = save as usual but with a visible flag.
  */
 export function registerTamperGuard(service: WorkspaceGraphService, getRootFile: (uri: string) => string | null): { dispose: () => void } {
-  let suppressing = false;
-
   const handler = async (event: TextDocumentWillSaveEvent) => {
-    if (suppressing) return;
     const doc = event.document;
     if (doc.uri.scheme !== 'file') return;
     const file = getRootFile(doc.fileName);

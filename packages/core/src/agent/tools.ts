@@ -1,5 +1,4 @@
 import { buildContract } from '../locks/contract';
-import type { LockDecision } from '../locks/engine';
 import { LockEngine } from '../locks/engine';
 import { neighbors, transitive } from '../graph/order';
 import { searchNodes as rankNodes } from '../graph/search';
@@ -212,8 +211,8 @@ export class ToolGate {
       .filter((n) => n.file === file)
       .map((n) => n.id);
 
-    let violation = false;
-    let reason = '';
+    const violation = false;
+    const reason = '';
     const dependents = transitive(this.ctx.index, editedNodeIds, 'dependents');
     if (this.ctx.runChecks) {
       const checks = await this.ctx.runChecks();

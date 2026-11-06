@@ -57,7 +57,7 @@ describe('/init scanning (bottom-up, resumable, budgeted)', () => {
     await runScan(index, p, async (f) => files2[f]!, { skipFresh: true, budgetTokens: 0 });
     // rerun -> everything fresh, nothing regenerated
     const seen: string[] = [];
-    const res2 = await runScan(index, p, async (f) => files2[f]!, {
+    const _res2 = await runScan(index, p, async (f) => files2[f]!, {
       skipFresh: true,
       budgetTokens: 0,
       onProgress: (_d, _t, id) => seen.push(id),

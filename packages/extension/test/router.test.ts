@@ -24,8 +24,8 @@ function makeDeps(overrides: Partial<RouterDeps> = {}): RouterDeps & { revealed:
     getGraph: () => ({ nodes: [node], edges: [], layers: ['core'] }),
     search: (q) => ({ nodes: q ? [node] : [], edges: [], layers: [] }),
     expand: () => ({ nodes: [node], edges: [], layers: ['core'] }),
-    readNodeSource: async (id) => ({ content: 'function hello() {}', startLine: 1, file: 'src/x.ts' }),
-    saveNodeEdit: async (id, content) => {
+    readNodeSource: async (_id) => ({ content: 'function hello() {}', startLine: 1, file: 'src/x.ts' }),
+    saveNodeEdit: async (_id, content) => {
       if (content.includes('hacked')) return { ok: false, error: 'lock violation' };
       return { ok: true };
     },

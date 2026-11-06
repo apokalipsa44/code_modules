@@ -8,7 +8,6 @@ import {
   allLayers,
   markStale,
   nodeToDto,
-  bottomUpOrder,
   estimateTokens,
   type CodeEdge,
   type CodeNode,
@@ -241,7 +240,6 @@ export class WorkspaceGraphService {
     }
   ): Promise<ScanResult & { estimatedTotalTokens: number }> {
     const index = this.store.get();
-    const order = bottomUpOrder(index);
     const estimatedTotalTokens = Math.min(
       estimateTokens(
         (await Promise.all((await this.files.list()).map((f) => this.files.read(f).then((t) => t ?? '')))).join('\n')

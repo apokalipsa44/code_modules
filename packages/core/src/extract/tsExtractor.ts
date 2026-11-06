@@ -236,7 +236,7 @@ export class TsExtractor {
           const name = nameNode.text;
           if (FN_VALUE_TYPES.has(value.type)) {
           const sym = joinPath(prefix, name);
-          let e: Extracted = {
+          const e: Extracted = {
             symbolPath: sym,
             name,
             kind: kindForFunction(name, file, value.text),

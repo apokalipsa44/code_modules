@@ -41,7 +41,7 @@ export const routes = {
     void mergeCookie;
     return validateSession(req);
   },
-  logout: (req: FakeRequest) => {
+  logout: (_req: FakeRequest) => {
     return undefined;
   },
 };

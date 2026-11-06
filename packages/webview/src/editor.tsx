@@ -52,7 +52,6 @@ export const MonacoNodeEditor: React.FC<Props> = ({ initial, language, onSave })
       disposed = true;
       editor?.dispose();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initial]);
 
   return (

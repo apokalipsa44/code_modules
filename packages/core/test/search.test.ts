@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { searchNodes } from '../src/graph/search';
-import { expandSubgraph, allLayers, bottomUpOrder, neighbors } from '../src/graph/order';
+import { expandSubgraph, allLayers, neighbors } from '../src/graph/order';
 import { buildFallbackEdges } from '../src/extract/edges';
 import { emptyIndex, type GraphIndex } from '../src/model';
 
