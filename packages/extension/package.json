@@ -1,22 +1,129 @@
 {
-  "name": "@nodecode/extension",
+  "name": "nodecode",
+  "displayName": "NodeCode",
+  "description": "Node-based code view with agent-enforced locks: edit your codebase as a graph, lock modules the AI can't touch",
   "version": "0.1.0",
   "private": true,
-  "description": "NodeCode VS Code extension host",
   "license": "MIT",
+  "publisher": "nodecode-dev",
   "type": "commonjs",
   "main": "dist/extension.js",
+  "icon": "assets/icon.png",
+  "sponsor": {
+    "url": "https://example.com/nodecode"
+  },
+  "engines": {
+    "vscode": "^1.95.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization",
+    "AI"
+  ],
+  "activationEvents": [
+    "onView:nodecode.graph"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "nodecode.openGraph",
+        "title": "NodeCode: Open Graph",
+        "category": "NodeCode"
+      },
+      {
+        "command": "nodecode.refresh",
+        "title": "NodeCode: Refresh Graph",
+        "category": "NodeCode"
+      },
+      {
+        "command": "nodecode.init",
+        "title": "NodeCode: /init — Scan workspace and generate metadata",
+        "category": "NodeCode"
+      },
+      {
+        "command": "nodecode.showLocks",
+        "title": "NodeCode: Show locked nodes",
+        "category": "NodeCode"
+      }
+    ],
+    "configuration": {
+      "title": "NodeCode",
+      "properties": {
+        "nodecode.depth": {
+          "type": "number",
+          "default": 2,
+          "description": "Dependency expansion depth when searching (1-4)."
+        },
+        "nodecode.autoLayout": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use dagre auto-layout for the graph."
+        },
+        "nodecode.checkCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Read-only check command run after agent edits (e.g. 'npx tsc --noEmit'). Empty disables the indirect breakage guard."
+        },
+        "nodecode.reviewEdits": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require diff review before agent edits apply. Default: auto-apply (edits are still logged and undoable)."
+        },
+        "nodecode.excludedFolders": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["**/node_modules/**", "**/.git/**", "**/dist/**", "**/out/**", "**/.nodes/**"],
+          "description": "Glob patterns excluded from scanning."
+        },
+        "nodecode.maxVisibleNodes": {
+          "type": "number",
+          "default": 250,
+          "description": "Cap visible nodes in the webview; extra nodes collapse into layer groups."
+        },
+        "nodecode.modelProvider": {
+          "type": "string",
+          "enum": ["claude", "mock"],
+          "default": "claude",
+          "description": "Model behind the NodeCode agent. 'mock' runs fully offline with deterministic scripted answers."
+        },
+        "nodecode.initBudgetTokens": {
+          "type": "number",
+          "default": 750000,
+          "description": "Hard cap (estimated tokens) for a /init scan."
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "nodecode.nodecode",
+        "name": "nodecode",
+        "description": "Scan the workspace (/init) and ask about your code graph. Secret: locked nodes expose contracts only.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "init",
+            "description": "Scan the workspace bottom-up and generate node metadata + default locks"
+          }
+        ]
+      }
+    ]
+  },
   "scripts": {
-    "build": "node esbuild.mjs"
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test": "npm run build"
+  },
+  "dependencies": {
+    "@nodecode/core": "*",
+    "@anthropic-ai/claude-agent-sdk": "^0.3.0",
+    "web-tree-sitter": "^0.25.0",
+    "tree-sitter-wasms": "^0.1.13"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/vscode": "^1.95.0",
     "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.24.0"
-  },
-  "dependencies": {
-    "@nodecode/core": "*",
-    "@anthropic-ai/claude-agent-sdk": "^0.3.0"
   }
 }

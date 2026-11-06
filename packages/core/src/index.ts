@@ -7,6 +7,7 @@ export * from './extract/edges';
 export * from './graph/store';
 export * from './graph/search';
 export * from './graph/order';
+export * from './graph/context';
 export * from './locks/engine';
 export * from './locks/contract';
 export * from './edit/apply';

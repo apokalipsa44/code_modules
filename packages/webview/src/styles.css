@@ -1,0 +1,91 @@
+:root {
+  --bg: #1e1e1e;
+  --panel: #252526;
+  --panel-2: #2d2d30;
+  --fg: #cccccc;
+  --muted: #8a8a8a;
+  --accent: #4a9eff;
+  --locked: #e2a93b;
+  --border: #3c3c3c;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; background: var(--bg); color: var(--fg); }
+
+.app { display: flex; flex-direction: column; height: 100vh; font-family: 'Segoe UI', Menlo, monospace, sans-serif; font-size: 12px; }
+
+.topbar {
+  display: flex; gap: 6px; align-items: center; padding: 6px 8px;
+  background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.search {
+  flex: 1 1 260px; padding: 5px 8px; border-radius: 4px;
+  background: #3c3c3c; color: var(--fg); border: 1px solid var(--border); outline: none;
+}
+.depth input { width: 3.5em; padding: 4px; background: #3c3c3c; color: var(--fg); border: 1px solid var(--border); border-radius: 4px; }
+
+button {
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--fg);
+  padding: 4px 9px; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+button:hover { border-color: var(--accent); }
+button.primary { background: #0e639c; color: #fff; border-color: #0e639c; }
+button.accent { background: #0e639c; color: #fff; }
+
+.layers { display: flex; gap: 4px; flex-wrap: wrap; }
+button.layer { padding: 2px 7px; border-radius: 10px; font-size: 10px; opacity: 0.65; }
+button.layer.on { opacity: 1; border-color: var(--accent); color: var(--accent); }
+
+.canvas { flex: 1; position: relative; }
+.empty {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); pointer-events: none; text-align: center;
+}
+
+.nodecard {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 10px; width: 260px; box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+}
+.nodecard.kind-route { border-left: 3px solid var(--accent); }
+.nodecard.kind-component { border-left: 3px solid #b180d7; }
+.nodecard.kind-class { border-left: 3px solid #e06c75; }
+.nodecard.locked { border: 1px solid var(--locked); background: #2a251d; }
+.nodecard-head { display: flex; align-items: center; gap: 6px; }
+.kind-chip {
+  background: var(--panel-2); border-radius: 4px; padding: 1px 4px; font-size: 10px;
+  color: var(--muted);
+}
+.nodecard-title { font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lock-badge { background: transparent; border: none; font-size: 13px; padding: 0 2px; }
+.lock-badge.locked { filter: none; }
+.stale-badge {
+  background: var(--locked); color: #2a251d; font-size: 9px; padding: 1px 5px; border-radius: 8px;
+}
+.nodecard-file { color: var(--muted); font-size: 10px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; }
+.tags { color: #7fb064; }
+.nodecard-summary {
+  margin-top: 4px; font-size: 10.5px; color: var(--fg);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.nodecard-summary.muted { color: var(--muted); font-family: monospace; }
+.nodecard-actions { display: flex; gap: 4px; margin-top: 6px; }
+.nodecard-actions button { font-size: 10px; padding: 2px 7px; }
+.nodecard-agent input {
+  width: 100%; margin-top: 6px; background: #3c3c3c; border: 1px solid var(--border);
+  color: var(--fg); border-radius: 4px; padding: 3px 6px; font-size: 10px;
+}
+.nodecard-editor { margin-top: 6px; border: 1px solid var(--accent); border-radius: 4px; }
+.editor-hints { color: var(--muted); font-size: 9px; padding: 2px 4px; }
+.editing-hint { color: var(--accent); font-size: 10px; align-self: center; }
+
+.agent-dock {
+  background: var(--panel); border-top: 1px solid var(--border);
+  padding: 4px 8px; max-height: 130px; overflow-y: auto;
+}
+.agent-title { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+.agent-line { font-size: 10.5px; padding: 1px 0; white-space: pre-wrap; word-break: break-word; }
+.agent-line.muted { color: var(--muted); }
+
+.react-flow__node { width: auto; }
+.react-flow__edge-text { fill: var(--muted); font-size: 9px; }
