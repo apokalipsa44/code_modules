@@ -11,7 +11,7 @@ export interface ProviderTurn {
 export type Turn =
   | { role: 'user'; text: string }
   | { role: 'assistant'; text: string }
-  | { role: 'toolResult'; callId: string; name: string; ok: boolean; summary: string; payload: unknown };
+  | { role: 'toolResult'; callId: string; name: string; args?: Record<string, unknown>; ok: boolean; summary: string; payload: unknown };
 
 /** Agent-visible conversation state (simplified, provider-agnostic). */
 export type ConversationState = readonly Turn[];

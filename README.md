@@ -70,9 +70,27 @@ No display / headless CI: everything except the live host is exercised by
 
 Two providers exist behind the same `MetaProvider`/tool-gate interfaces in core:
 
+- **local LM Studio (`lmstudio`)** — OpenAI-compatible local server; no API key
+  needed (a `lm-studio` placeholder is sent, LM Studio ignores it). Enable it
+  with `code_modules.modelProvider = "lmstudio"`. Pattern borrowed from the
+  sibling `btfa` project:
+  - base URL (`code_modules.lmStudioBaseUrl`) **must end in `/v1`** — the client
+    appends only `/chat/completions` (default `http://localhost:1234/v1`);
+  - model selection is dynamic: `code_modules.lmStudioModel` empty ⇒ the
+    provider lists models via the native REST API
+    (`GET {host}/api/v1/models`, no `/v1` suffix) and picks the first *loaded*
+    LLM;
+  - generous timeout (`code_modules.lmStudioTimeoutMs`, default 120 s) because
+    loading a large model into VRAM takes tens of seconds;
+  - no streaming (the agent loop needs full turns), temperature `0.2`.
+  `/init` summaries route through the same server
+  (`lmStudioMetaProvider`); when the server is unreachable or returns
+  non-JSON, summaries fall back to the heuristic provider.
+  The same ToolGate enforces locks — nothing about local models changes the
+  security model.
+
 - **offline `mock` (default)** — deterministic, no network, no key; used by all
   tests and automatically when no API key is configured. Good enough to verify
-  the full graph/edit/lock flow.
 - **Claude (Agent SDK)** — implemented (MCP tool server + `canUseTool` deny
   gate). Enable it with **both**:
 
@@ -98,6 +116,9 @@ Two providers exist behind the same `MetaProvider`/tool-gate interfaces in core:
 | `code_modules.excludedFolders` | glob list | folders skipped when scanning |
 | `code_modules.maxVisibleNodes` | `400` | render cap / lazy-edge past this |
 | `code_modules.initBudgetTokens` | `750000` | /init token budget |
+| `code_modules.lmStudioBaseUrl` | `http://localhost:1234/v1` | LM Studio OpenAI-compat base URL **(must end in `/v1`)** |
+| `code_modules.lmStudioModel` | `""` | LM Studio model id; empty ⇒ auto-pick first loaded model |
+| `code_modules.lmStudioTimeoutMs` | `120000` | request timeout for LM Studio calls (ms) |
 
 Everything is logged, nothing is telemetred — ever.
 

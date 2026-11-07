@@ -3,6 +3,8 @@ import type { AgentSummary, CodeNode, GraphIndex, NodeMeta } from '../model';
 import { bottomUpOrder } from '../graph/order';
 
 export interface MetaProvider {
+  /** Stable /info value (e.g. 'heuristic', 'sdk', 'lmstudio-meta'). */
+  readonly name?: string;
   /** Generate summaries + tags for one node. context has sibling/leaf summaries already generated. */
   summarize(
     node: { id: string; name: string; signature: string; kind: string; file: string; source: string },

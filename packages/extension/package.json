@@ -93,10 +93,26 @@
           "type": "string",
           "enum": [
             "claude",
+            "lmstudio",
             "mock"
           ],
           "default": "claude",
-          "description": "Model behind the code_modules agent. 'mock' runs fully offline with deterministic scripted answers."
+          "description": "Model behind the code_modules agent. 'lmstudio' uses a local LM Studio server (OpenAI-compatible API). 'mock' runs fully offline with deterministic scripted answers."
+        },
+        "code_modules.lmStudioBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:1234/v1",
+          "description": "LM Studio OpenAI-compatible base URL. MUST end in /v1 (the client appends only /chat/completions)."
+        },
+        "code_modules.lmStudioModel": {
+          "type": "string",
+          "default": "",
+          "description": "LM Studio model id. Empty = auto-resolve: first loaded model from LM Studio's model list."
+        },
+        "code_modules.lmStudioTimeoutMs": {
+          "type": "number",
+          "default": 120000,
+          "description": "Request timeout for LM Studio calls (ms). Generous default: loading a large model into VRAM can take tens of seconds."
         },
         "code_modules.initBudgetTokens": {
           "type": "number",

@@ -45,6 +45,18 @@
 - Settings: depth, excludedFolders, checkCommand, reviewEdits, modelProvider, initBudgetTokens. API key only in SecretStorage/env.
 - Telemetry: none, ever. Errors surfaced through webview + notifications. Docs: README, DECISIONS, BLOCKERS.
 - MCP server package: deferred to IDEAS (optional per spec).
+## LM Studio provider ✅ (local LLM, pattern from btfa)
+- Core `OpenAiCompatProvider` (OpenAI-compatible chat/completions, no streaming)
+  + `openAiChatText` for /init + `lmStudioMetaProvider` (heuristic fallback on
+  errors/non-JSON) + native REST model discovery (`GET {host}/api/v1/models`,
+  first loaded LLM auto-picked when `lmStudioModel` is empty).
+- Extension wiring: `modelProvider = "lmstudio"` → `AgentRunner` over LM Studio
+  behind the same ToolGate (locks identical); settings `lmStudioBaseUrl`
+  (must end in `/v1`), `lmStudioModel`, `lmStudioTimeoutMs`.
+- Tests: wire mapping (tool replay), URL/timeout/error mapping, model
+  discovery preference (native API → openai-compat fallback), model ranking,
+  chat-text helper. 11 new tests; full suite 48 green, lint/typecheck clean.
+
 ## Final packaging ✅
 - README.md: architecture, run/test instructions, settings table, provider + key handling, demo script, packaging note.
 - CI (GitHub Actions): install → build → lint → typecheck → vitest; bundle uploaded as artifact.

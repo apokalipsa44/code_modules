@@ -14,4 +14,5 @@ export * from './edit/apply';
 export * from './agent/provider';
 export * from './agent/tools';
 export * from './agent/runner';
+export * from './agent/openaiProvider';
 export * from './meta/generate';

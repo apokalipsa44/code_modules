@@ -65,6 +65,7 @@ export class AgentRunner {
           role: 'toolResult',
           callId: call.id,
           name: call.name,
+          args: call.args,
           ok: result.ok,
           summary: result.summary,
           payload: result.payload,

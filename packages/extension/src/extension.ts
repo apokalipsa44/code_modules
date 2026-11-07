@@ -35,8 +35,24 @@ import { PendingEdits, reviewingToolContext } from './agent/pendingEdits';
 import { tryLoadSdk, sdkAgentRun } from './agent/claudeProvider';
 import { agentSystemPrompt } from './agent/systemPrompt';
 import { summarizeViaSdk } from './agent/scanModel';
+import {
+  AgentRunner,
+  OpenAiCompatProvider,
+  lmStudioMetaProvider,
+  type OpenAiCompatConfig,
+} from '@code_modules/core';
 
 const settings = () => workspace.getConfiguration('code_modules');
+
+/** LM Studio config from settings (btfa parity: base URL must end in /v1, key is a placeholder). */
+function lmStudioConfig(): Omit<OpenAiCompatConfig, 'systemPrompt'> {
+  const s = settings();
+  return {
+    baseUrl: s.get<string>('lmStudioBaseUrl') ?? 'http://localhost:1234/v1',
+    model: s.get<string>('lmStudioModel') ?? '',
+    timeoutMs: s.get<number>('lmStudioTimeoutMs') ?? 120_000,
+  };
+}
 
 export function activate(context: ExtensionContext): { service: WorkspaceGraphService } {
   const wsFolder = workspace.workspaceFolders?.[0];
@@ -122,6 +138,28 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     const apiKey = await getApiKey();
     const provider = settings().get<string>('modelProvider') ?? 'claude';
 
+    if (provider === 'lmstudio') {
+      try {
+        const cfg = lmStudioConfig();
+        // Fresh gate: locks + index as of NOW (never reuse a stored index snapshot).
+        const liveGate = new ToolGate(toolGateCtx());
+        const run = await new AgentRunner(new OpenAiCompatProvider({ ...cfg, systemPrompt }), liveGate).run({
+          instruction,
+          maxTurns: 12,
+        });
+        if (run.blocked.length) {
+          void window.showWarningMessage(`code_modules: agent tried disallowed tool(s) ${run.blocked.length}× — denied.`);
+        }
+        await service.ensureScanned(() => undefined);
+        const note = run.blocked.length ? `\n(${run.blocked.length} locked/disallowed attempt(s) blocked)` : '';
+        return (run.reply || 'done') + note;
+      } catch (err) {
+        void window.showWarningMessage(
+          `code_modules: LM Studio unreachable (${String(err).slice(0, 120)}) — start it at ${settings().get<string>('lmStudioBaseUrl') ?? 'http://localhost:1234'} and load a model.`
+        );
+        // fall through to the offline mock message below
+      }
+    }
     if (provider === 'claude' && apiKey) {
       const sdk = await tryLoadSdk();
       if (sdk) {
@@ -177,12 +215,19 @@ export function activate(context: ExtensionContext): { service: WorkspaceGraphSe
     await service.ensureScanned();
     const apiKey = await getApiKey();
     const budget = estimateBudget();
-    const provider: MetaProvider = apiKey ? new SdkMetaProvider(apiKey) : ({
-      async summarize(node) {
-        const { heuristicMetaProvider } = await import('@code_modules/core');
-        return heuristicMetaProvider().summarize(node, []);
-      },
-    } as MetaProvider);
+    let provider: MetaProvider;
+    if (settings().get<string>('modelProvider') === 'lmstudio') {
+      provider = lmStudioMetaProvider(lmStudioConfig());
+    } else if (apiKey) {
+      provider = new SdkMetaProvider(apiKey);
+    } else {
+      provider = ({
+        async summarize(node) {
+          const { heuristicMetaProvider } = await import('@code_modules/core');
+          return heuristicMetaProvider().summarize(node, []);
+        },
+      } as MetaProvider);
+    }
     await window.withProgress(
       { location: ProgressLocation.Notification, cancellable: true, title: 'code_modules /init' },
       async (progress, token) => {
